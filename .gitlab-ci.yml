@@ -6,8 +6,8 @@ stages:
 build:
   stage: build
   script:
-    - ./gradlew build
+    - gradle build
 test:
   stage: test
   script:
-    - ./gradlew test
+    - gradle test
