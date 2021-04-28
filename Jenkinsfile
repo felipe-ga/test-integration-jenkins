@@ -1,13 +1,18 @@
 pipeline {
     agent any
+       triggers {
+        pollSCM "* * * * *"
+       }
     stages {
-        stage("Build") {
+        stage('Build Application') {
             steps {
-                sh "./gradlew compileJava"
+                echo '=== Building mutation Application ==='
+                sh "./gradlew build"
             }
         }
-        stage("Test") {
+        stage('Test Application') {
             steps {
+                echo '=== Testing mutation Application ==='
                 sh "./gradlew test"
             }
         }
