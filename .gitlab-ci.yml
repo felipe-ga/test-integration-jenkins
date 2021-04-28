@@ -1,26 +1,18 @@
-variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+image: java:8-jdk
 
-before_script:
-  - export GRADLE_USER_HOME=`pwd`/.gradle
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
 
 build:
   stage: build
-  script: gradle --build-cache assemble
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: push
+  script:
+    - ./gradlew assemble
+  # define path to collect artifacts
+  artifacts:
     paths:
-      - build
-      - ./gradlew build
-
-test:
-  stage: test
-  script: gradle check
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
-    paths:
-      - build
-      - ../gradlew test
-
+      - build/libs/*.jar
+    expire_in: 1 week
+  only:
+    - master
