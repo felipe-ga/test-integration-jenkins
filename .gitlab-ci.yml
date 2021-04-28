@@ -1,4 +1,4 @@
-image: gradle:jdk1
+image: openjdk:latest
 
 stages:
   - build
