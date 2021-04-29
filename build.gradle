@@ -2,10 +2,12 @@ plugins {
 	id 'org.springframework.boot' version '2.4.5'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'com.palantir.docker' version '0.26.0'
+	id 'com.palantir.docker-run' version '0.26.0'
 }
 
 group = 'com.guros'
-version = '0.0.1-SNAPSHOT'
+version = '1'
 sourceCompatibility = '11'
 
 repositories {
@@ -18,7 +20,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.4.5'
 	// https://mvnrepository.com/artifact/com.h2database/h2
-	runtime group: 'com.h2database', name: 'h2', version: '1.4.200'
+	runtimeOnly group: 'com.h2database', name: 'h2', version: '1.4.200'
 	// https://mvnrepository.com/artifact/junit/junit
 	testImplementation group: 'junit', name: 'junit', version: '4.12'
 	testImplementation 'io.cucumber:cucumber-java:6.7.0'
@@ -26,6 +28,20 @@ dependencies {
 	testImplementation 'io.cucumber:cucumber-junit:6.7.0'
 }
 
+String imageName = "tkgregory/spring-boot-api-example:$version"
+docker {
+	name imageName
+	files "build/libs/${bootJar.archiveFileName.get()}"
+	buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
+}
+dockerRun {
+	name project.name
+	image imageName
+	ports '8080:8080'
+	clean true
+}
+
 test {
 	useJUnitPlatform()
 }
+
