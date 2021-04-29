@@ -3,35 +3,18 @@ pipeline {
     triggers {
         pollSCM "* * * * *"
     }
-    options {
-          timeout(time: 3, unit: 'MINUTES')
-     }
+    options { timeout(time: 5) }
     stages {
-            stage ('Clean & Build Artifact') {
-                agent {
-                    docker {
-                        image 'openjdk:11'
-                        args '-v "$PWD":/app'
-                        reuseNode true
-                    }
-                }
-                steps {
-                    echo '=== Building mutation Application ==='
-                    sh './gradlew clean build'
-                }
+        stage('Build Application') {
+            steps {
+                echo '=== Building mutation Application ==='
+                sh "./gradlew build"
             }
-            stage ('Test Artifact') {
-                agent {
-                    docker {
-                       image 'openjdk:11'
-                       args '-v "$PWD":/app'
-                       reuseNode true
-                    }
-                }
-                steps {
-                    echo '=== Testing mutation Application ==='
-                    sh './gradlew test'
-                }
+        }
+        stage('Test Application') {
+            steps {
+                echo '=== Testing mutation Application ==='
+                sh "./gradlew test"
             }
         }
     }
